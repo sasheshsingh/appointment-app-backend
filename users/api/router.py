@@ -9,6 +9,8 @@ from fastapi import Form
 from datetime import datetime, timedelta
 import requests
 from config import settings
+from pydantic import BaseModel
+
 
 router = APIRouter(prefix='/api', tags=['users'])
 
@@ -86,3 +88,20 @@ async def microsoft_login(code: str, redirect_uri: str, db: Session = Depends(ge
         return db_user.create_token(user)
     else:
         raise HTTPException(status_code=400, detail={'error': 'User information not found'})
+
+
+@router.post("/api/google-signin")
+async def google_signin(code: str, redirect_uri: str):
+    token_url = "https://accounts.google.com/o/oauth2/token"
+    data = {
+        "code": code,
+        "client_id": settings.GOOGLE_CLIENT_ID,
+        "client_secret": settings.GOOGLE_CLIENT_SECRET,
+        "redirect_uri": redirect_uri,
+        "grant_type": "authorization_code",
+    }
+    response = requests.post(token_url, data=data)
+    access_token = response.json().get("access_token")
+    user_info = requests.get("https://www.googleapis.com/oauth2/v1/userinfo",
+                             headers={"Authorization": f"Bearer {access_token}"})
+    return user_info.json()

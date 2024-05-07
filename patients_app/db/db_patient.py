@@ -6,7 +6,7 @@ from patients_app.schemas import PatientBase
 
 def create_patient(db: Session, request: PatientBase, user_id: int):
     new_appointment = Patient(
-        user_id=user_id,
+        user_id=request.user,
         name=request.name,
         email=request.email,
         phone=request.phone,

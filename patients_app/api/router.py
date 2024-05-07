@@ -7,6 +7,7 @@ from patients_app.models import Appointment
 from patients_app.schemas import PatientBase, PatientDisplay, AppointmentBase, AppointmentDisplay
 from sqlalchemy.orm import Session
 from patients_app.db import db_patient, db_appointment
+from payment.payment import create_checkout_session
 
 from settings import get_db
 from users.db.db_user import oauth2schema, get_current_user
@@ -15,9 +16,9 @@ router = APIRouter(prefix="/api", tags=["patients"])
 
 
 @router.post('/patients', response_model=PatientDisplay)
-async def create_patient(patient: PatientBase, db: Session = Depends(get_db), token: str = Depends(oauth2schema)):
-    user = get_current_user(db=db, token=token)
-    return db_patient.create_patient(db, patient, user.id)
+async def create_patient(patient: PatientBase, db: Session = Depends(get_db)):
+    # user = get_current_user(db=db, token=token)
+    return db_patient.create_patient(db, patient, 1)
 
 
 @router.get('/patients', response_model=List[PatientDisplay])
@@ -46,9 +47,11 @@ async def delete_patient(patient_id: int, db: Session = Depends(get_db)):
     return db_patient.delete_patient(db, patient_id)
 
 
-@router.post('/appointment', response_model=AppointmentDisplay)
-async def create_appointment(appointment: AppointmentBase, db: Session = Depends(get_db)):
-    return db_appointment.create_appointment(db, appointment)
+@router.post('/appointment')
+async def create_appointment(appointment: AppointmentBase, success_url: str = "https://yourdomain.com/success", failer_url: str = "https://yourdomain.com/failer", db: Session = Depends(get_db)):
+    # amount = appointment.amount
+    obj = db_appointment.create_appointment(db, appointment)
+    return create_checkout_session(100, success_url, failer_url)
 
 
 @router.get('/appointment', response_model=List[AppointmentDisplay])
