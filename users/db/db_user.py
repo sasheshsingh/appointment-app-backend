@@ -51,7 +51,7 @@ def authentcate_user(email: str, password: str, db: Session):
 def create_token(user: DBUser):
     user_obj = UserBase.from_orm(user)
     token = jwt.encode(user_obj.dict(), JWT_SECRET_KEY)
-    return dict(access_token=token, token_type="jwt")
+    return dict(access_token=token, token_type="jwt", user=user.id)
 
 
 def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2schema)):
