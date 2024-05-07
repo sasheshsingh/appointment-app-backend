@@ -40,5 +40,5 @@ class AppointmentDisplay(BaseModel):
     date: str
     time: str
     status: str
-    transaction_id: str
-    amount: str
+    transaction_id: Optional[str]
+    amount: Optional[str]
