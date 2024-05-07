@@ -48,9 +48,9 @@ async def delete_patient(patient_id: int, db: Session = Depends(get_db)):
 
 
 @router.post('/appointment')
-async def create_appointment(appointment: AppointmentBase, success_url: str, failure_url: str, db: Session = Depends(get_db)):
+async def create_appointment(appointment: AppointmentBase, db: Session = Depends(get_db)):
     obj = db_appointment.create_appointment(db, appointment)
-    return create_checkout_session(100, success_url, failure_url)
+    return create_checkout_session(100, appointment.success_url, appointment.failure_url)
 
 
 @router.get('/appointment', response_model=List[AppointmentDisplay])

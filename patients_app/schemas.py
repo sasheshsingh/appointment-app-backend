@@ -34,6 +34,8 @@ class AppointmentBase(BaseModel):
     status: str
     transaction_id: Optional[str]
     amount: Optional[str]
+    success_url: str
+    failure_url: str
 
 
 class AppointmentDisplay(BaseModel):
