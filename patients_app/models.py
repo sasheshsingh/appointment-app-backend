@@ -27,4 +27,6 @@ class Appointment(Base):
     date = Column(String)
     time = Column(String)
     status = Column(String)
+    transaction_id = Column(String, nullable=True)
+    amount = Column(String, nullable=True)
 
