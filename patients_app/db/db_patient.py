@@ -4,9 +4,9 @@ from patients_app.models import Patient
 from patients_app.schemas import PatientBase
 
 
-def create_patient(db: Session, request: PatientBase):
+def create_patient(db: Session, request: PatientBase, user_id: int):
     new_appointment = Patient(
-        user_id=request.user,
+        user_id=user_id,
         name=request.name,
         email=request.email,
         phone=request.phone,

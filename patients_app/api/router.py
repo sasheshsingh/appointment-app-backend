@@ -9,13 +9,15 @@ from sqlalchemy.orm import Session
 from patients_app.db import db_patient, db_appointment
 
 from settings import get_db
+from users.db.db_user import oauth2schema, get_current_user
 
 router = APIRouter(prefix="/api", tags=["patients"])
 
 
 @router.post('/patients', response_model=PatientDisplay)
-async def create_patient(patient: PatientBase, db: Session = Depends(get_db)):
-    return db_patient.create_patient(db, patient)
+async def create_patient(patient: PatientBase, db: Session = Depends(get_db), token: str = Depends(oauth2schema)):
+    user = get_current_user(db=db, token=token)
+    return db_patient.create_patient(db, patient, user.id)
 
 
 @router.get('/patients', response_model=List[PatientDisplay])

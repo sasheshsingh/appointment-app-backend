@@ -1,7 +1,7 @@
 from fastapi import security, HTTPException, Depends
 
 from users.db.hash import Hash
-from users.schemas import UserBase
+from users.schemas import UserBase, UserDisplay
 from sqlalchemy.orm.session import Session
 from users.models import DBUser
 from settings import JWT_SECRET_KEY, ALGORITHM, get_db
@@ -65,6 +65,6 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2s
         if user is None:
             raise HTTPException(status_code=401, detail="User not found")
 
-        return UserBase.from_orm(user)
+        return UserDisplay.from_orm(user)
     except:
         raise HTTPException(status_code=401, detail="Could not validate credentials")
