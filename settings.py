@@ -5,7 +5,8 @@ from sqlalchemy.ext.declarative import declarative_base
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+BASEDIR = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(os.path.join(BASEDIR, 'config.env'))
 
 SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
 
