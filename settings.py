@@ -14,7 +14,7 @@ JWT_SECRET_KEY = "jwt"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-engine = create_engine("postgresql://postgres:abcdijkl@localhost/appointment_app_db")
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
