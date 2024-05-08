@@ -37,6 +37,7 @@ def get_all_patient(db: Session, user_id: int = 1, search: str = None):
         query = query.filter(Patient.name.ilike(f'%{search}%'))
     return query
 
+
 def get_patient(db: Session, patient_id):
     return db.query(Patient).filter(Patient.id == patient_id).first()
 

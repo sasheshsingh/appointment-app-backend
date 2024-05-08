@@ -1,7 +1,7 @@
 from config.settings import stripe
 
 
-def create_checkout_session(amount: int, success_url, failure_url):
+def create_checkout_session(amount: int, success_url, failure_url, appointment_id: int):
     session = stripe.checkout.Session.create(
         payment_method_types=['card'],
         line_items=[{
@@ -15,6 +15,9 @@ def create_checkout_session(amount: int, success_url, failure_url):
             'quantity': 1,
         }],
         mode='payment',
+        metadata={
+            'id': appointment_id
+        },
         success_url=success_url,
         cancel_url=failure_url,
     )
