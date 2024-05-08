@@ -31,9 +31,11 @@ def update_patient(db: Session, patient_id: int, patient: PatientBase):
     return db_patient
 
 
-def get_all_patient(db: Session, user_id: int = 1):
-    return db.query(Patient).filter(Patient.user_id==user_id)
-
+def get_all_patient(db: Session, user_id: int = 1, search: str = None):
+    query = db.query(Patient).filter(Patient.user_id==user_id)
+    if search:
+        query = query.filter(Patient.name.ilike(f'%{search}%'))
+    return query
 
 def get_patient(db: Session, patient_id):
     return db.query(Patient).filter(Patient.id == patient_id).first()

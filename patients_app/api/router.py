@@ -22,8 +22,8 @@ async def create_patient(patient: PatientBase, db: Session = Depends(get_db)):
 
 
 @router.get('/patients', response_model=List[PatientDisplay])
-async def list_patients(user_id: int, db: Session = Depends(get_db)):
-    return db_patient.get_all_patient(db, user_id)
+async def list_patients(user_id: int, db: Session = Depends(get_db), search: str = None):
+    return db_patient.get_all_patient(db, user_id, search)
 
 
 @router.get('/patients/{patient_id}', response_model=PatientDisplay)
