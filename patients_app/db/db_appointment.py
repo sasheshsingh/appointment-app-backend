@@ -47,5 +47,5 @@ def get_appointment_by_id(db: Session, appointment_id: int):
 def update_appointment_by_id(id: int, db: Session):
     obj = db.query(Appointment).filter(Appointment.id == id).first()
     obj.status = "completed"
-    obj.commit()
+    db.commit()
     return obj
