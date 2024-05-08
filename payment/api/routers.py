@@ -1,32 +1,24 @@
-from config.settings import stripe
-from fastapi import APIRouter
-from fastapi import APIRouter, Request, Response
+from fastapi import APIRouter, Request, Response, Depends
+
+from config.settings import stripe, STRIPE_SECRET_KEY
+
+from patients_app.db import db_appointment
+from sqlalchemy.orm import Session
 
 router = APIRouter(prefix='/api/payment', tags=['payment'])
 
+
 @router.post("/webhook")
-
-
-async def stripe_webhook(request: Request, response: Response):
-    payload = await request.body()
-    sig_header = request.headers.get("Stripe-Signature")
-
+async def stripe_webhook(request: Request, response: Response, db: Session = Depends(get_db)):
     try:
-        event = stripe.webhooks.construct_event(
-            payload, sig_header, "your_stripe_webhook_secret"
-        )
-    except ValueError as e:
-        response.status_code = 400
-        return str(e)
-    except stripe.error.SignatureVerificationError as e:
-        response.status_code = 400
-        return str(e)
-
-    # Handle the event
-    if event['type'] == 'checkout.session.completed':
-        print(event)
-        session = event['data']['object']
-    elif event['type'] == 'checkout.session.async_payment_failed':
-        session = event['data']['object']
-    response.status_code = 200
-    return "OK"
+        payload = await request.body()
+        event = payload
+        if event['type'] == 'checkout.session.completed':
+            session = event['data']['object']['metadata']['id']
+            db_appointment.update_appointment_by_id(session)
+        elif event['type'] == 'checkout.session.async_payment_failed':
+            session = event['data']['object']
+        response.status_code = 200
+        return "OK"
+    except Exception as e:
+        return e
