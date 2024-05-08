@@ -10,7 +10,7 @@ app = FastAPI()
 
 origins = [
     'http://localhost:3000',
-    'https://appointment-backend.sasheshsingh.com/'
+    'https://appointment.sasheshsingh.com/'
 ]
 
 
