@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Request, Response, Depends
-
+from settings import get_db
 from config.settings import stripe, STRIPE_SECRET_KEY
 
 from patients_app.db import db_appointment
