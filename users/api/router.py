@@ -22,7 +22,7 @@ async def create_user(email: str = Form(...), password: str = Form(...), usernam
     if obj:
         raise HTTPException(status_code=422, detail='User already exists')
     user = UserBase(email=email, password=password, username=username)
-    db_user.create_user(db, user)
+    user = db_user.create_user(db, user)
     return db_user.create_token(user)
 
 
