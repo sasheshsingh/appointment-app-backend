@@ -9,7 +9,8 @@ def create_appointment(db: Session, appointment: AppointmentBase):
         patient_id=appointment.patient,
         date=appointment.date,
         time=appointment.time,
-        status=appointment.status
+        status=appointment.status,
+        amount=appointment.amount
     )
     db.add(new_appointment)
     db.commit()
@@ -44,8 +45,9 @@ def get_appointment_by_id(db: Session, appointment_id: int):
     return db.query(Appointment).filter(Appointment.id == appointment_id).all()
 
 
-def update_appointment_by_id(id: int, db: Session):
+def update_appointment_by_id(id: int, transaction_id: str, db: Session):
     obj = db.query(Appointment).filter(Appointment.id == id).first()
     obj.status = "completed"
+    obj.transaction_id = transaction_id
     db.commit()
     return obj

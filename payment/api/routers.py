@@ -12,9 +12,10 @@ router = APIRouter(prefix='/api/payment', tags=['payment'])
 async def stripe_webhook(payload: dict, request: Request, response: Response, db: Session = Depends(get_db)):
     try:
         event = payload
+        transaction_id = event['id']
         if event['type'] == 'checkout.session.completed':
             session = event['data']['object']['metadata']['id']
-            db_appointment.update_appointment_by_id(int(session), db)
+            db_appointment.update_appointment_by_id(int(session), transaction_id,db)
         elif event['type'] == 'checkout.session.async_payment_failed':
             session = event['data']['object']
         response.status_code = 200
